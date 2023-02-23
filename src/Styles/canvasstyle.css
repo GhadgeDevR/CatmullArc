@@ -1,0 +1,25 @@
+*{
+    padding: 0px !important;
+    margin: 0px !important;
+}
+
+.canvasContainer{
+    position: relative;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.canvasContainer__maincanvas{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.glassComp__mainCanvas canvas {
+    position: relative;
+    height: 100% !important;
+    width: 100% !important;
+    
+}
