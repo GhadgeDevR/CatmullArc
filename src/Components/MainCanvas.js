@@ -69,29 +69,59 @@ class CanvasHome extends Component {
     }
 
     draw = () =>{
-        //code
-        const curve = new THREE.CatmullRomCurve3([
-            new THREE.Vector3(-10,0,0),
-            new THREE.Vector3(-5,5,0),            
-            new THREE.Vector3(0,0,0),            
-            new THREE.Vector3(5,-5,0),            
-            new THREE.Vector3(10,0,0),            
 
-        ])
         
-        const points = curve.getPoint(50);
-        const geometry = new THREE.BufferGeometry().setFromPoints(points)
-        const material = new THREE.LineBasicMaterial({color:0Xff0000});
+        const points = [
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(1, 1, 0),
+            new THREE.Vector3(2, 3, 0),
+            new THREE.Vector3(5, 1, 0),
+            new THREE.Vector3(7, 8, 0)
+          ];
+      
+          const curve = new THREE.CatmullRomCurve3( points );
+          const curvePoints = curve.getPoints( 50 );
 
-        const curveObject = new THREE.Line(geometry, material)
-        this.scene.add(curveObject);
+          
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
+        const lineMaterial = new THREE.LineBasicMaterial( { color: 0x000000, linewidth:5} );
+        const line = new THREE.Line( lineGeometry, lineMaterial );
+        
+        this.scene.add(line);
 
+          const tubeGeometry = new THREE.TubeGeometry(
+            curve,
+            20,
+            0.5,    // radius of the tube
+            4,      // number of segments
+            false   // closed or not
+          );
+      
+          const material = new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true });
+          const mesh = new THREE.Mesh(tubeGeometry, material);
+      
+          this.scene.add(mesh);
+      
+        // Using ExtrudeGeometry
+        // const shape = new THREE.Shape(curvePoints);
+        // const extrudeSettings = {
+        //   steps: 30,
+        //   depth: 2,
+        //   bevelEnabled: false,
+          
+        // };
+        // const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        // const material = new THREE.MeshBasicMaterial({ color: 0xf00ff00, wireframe:true });
+        // const mesh = new THREE.Mesh(geometry, material);
+    
+        // this.scene.add(mesh);
+    
     }
 
     setupCamera = () => {
 
-        this.camera = new THREE.PerspectiveCamera(50, (this.WNDSIZE.width/this.WNDSIZE.height), 0.1, 1000);
-        this.camera.position.set(0,50,500);
+        this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+        this.camera.position.z = 15;
         this.camera.lookAt(this.scene.position);
 
         /* Orbit Cotrols */
@@ -118,21 +148,18 @@ class CanvasHome extends Component {
 
     resizeWindow = () => {
         /* Window Size */
-        this.WNDSIZE.width = this.mount.clientWidth;
-        this.WNDSIZE.height = this.mount.clientHeight;
-
-        this.camera.aspect = this.WNDSIZE.width / this.WNDSIZE.height;
+        const width = this.mount.clientWidth;
+        const height = this.mount.clientHeight;
+    
+        this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
-
-        this.renderer.setSize( this.WNDSIZE.width, this.WNDSIZE.height );
+    
+        this.renderer.setSize( width, height );
     }
 
 
     update = () => {
 
-        // this.cube.rotation.x += 0.01;
-        // this.cube.rotation.y += 0.01;
-        // this.cube.rotation.z += 0.01;
 
         this.controls.update();
         this.renderScene();
